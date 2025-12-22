@@ -1,0 +1,278 @@
+#include<iostream>
+using namespace std;
+
+struct node
+{
+    int data;
+    struct node * prev;
+    struct node * next;
+};
+
+typedef struct node NODE;
+typedef struct node * PNODE;
+
+class SinglyLL
+{
+    public:
+        PNODE first;
+        int iCount;
+
+        SinglyLL()
+        {
+            first = NULL;
+            iCount = 0;
+        }
+
+        void InsertFirst(int no)
+        {
+            PNODE newn = NULL;
+
+            newn = new NODE;
+
+            newn -> data = no;
+            newn -> next = NULL;
+            newn -> prev = NULL;
+
+            if (first == NULL)
+            {
+                first = newn;
+            }
+            else
+            {
+                newn -> next = first;
+                first -> prev = newn;
+                first = newn;
+            }
+            iCount++;
+        }
+
+        void InsertLast(int no)
+        {
+            PNODE newn = NULL;
+            PNODE temp = NULL;
+
+            newn = new NODE;
+
+            newn -> data = no;
+            newn -> next = NULL;
+            newn -> prev = NULL;
+
+            if (first == NULL)
+            {
+                first = newn;
+            }
+            else
+            {
+                temp = first;
+
+                while(temp -> next  != NULL)
+                {
+                    temp = temp -> next;
+                }
+
+                temp -> next = newn;
+                newn -> prev = temp;
+            }
+            iCount++;
+        }
+
+        void DeleteFirst()
+        {
+            if (first == NULL)
+            {
+                return;
+            }
+            else if (first -> next == NULL)
+            {
+                delete(first);
+                first = NULL;
+            }
+            else
+            {
+                first = first -> next;
+                delete(first -> prev);
+                first -> prev = NULL;
+            }
+            iCount--;
+        }
+ 
+        void DeleteLast()
+        {
+            PNODE temp = NULL;
+
+            if (first == NULL)
+            {
+                return;
+            }
+            else if (first -> next == NULL)
+            {
+                delete(first);
+                first = NULL;
+            }
+            else
+            {
+                temp = first;
+
+                while(temp -> next -> next != NULL)
+                {
+                    temp = temp -> next;
+                }
+
+                delete(temp -> next);
+                temp -> next = NULL;
+            }
+            iCount--;
+        }
+ 
+        void Display()
+        {
+            PNODE temp = NULL;
+
+            temp = first;
+            if (temp == NULL)
+            {
+                cout<<"List is Empty\n";
+                return;
+            }
+
+            while(temp != NULL)
+            {
+                cout<<"| "<<temp -> data<<" | <=> ";
+                temp = temp -> next;
+            }
+            cout<<"\n";
+        }
+
+        int Count()
+        {
+            return iCount;
+        }
+
+        void InsertAtPos(int pos,int no)
+        {
+            PNODE newn = NULL;
+            PNODE temp = NULL;
+            int iCnt = 0;
+
+            if (pos > 1 || pos < iCount +1)
+            {
+                cout<<"Invalid Position \n";
+            }
+
+            if (pos == 1)
+            {
+                InsertFirst(no);
+            }
+            else if(pos == iCount + 1)
+            {
+                InsertLast(no);
+            }
+            else
+            {
+                newn = new NODE;
+
+                newn -> data = no;
+                newn -> next = NULL;
+                newn -> prev = NULL;
+
+                temp = first;
+
+                for(iCnt = 1; iCnt < pos -1; iCnt++)
+                {
+                    temp = temp -> next;
+                }
+
+                newn -> next = temp -> next;
+                temp -> next -> prev = newn;
+                newn -> prev = temp;
+                temp -> next = newn;
+
+                iCount++;
+            }
+        }
+
+        void DeleteAtPos(int pos)
+        {
+            PNODE temp = NULL;
+            int iCnt = 0;
+
+            if (pos > 1 || pos < iCount +1)
+            {
+                cout<<"Invalid Position \n";
+            }
+
+            if (pos == 1)
+            {
+                DeleteFirst();
+            }
+            else if(pos == iCount)
+            {
+                DeleteLast();
+            }
+            else
+            {
+                temp = first;
+
+                for(iCnt = 1; iCnt < pos -1; iCnt++)
+                {
+                    temp = temp -> next;
+                }
+
+                temp -> next = temp -> next -> next;
+                delete(temp -> next -> prev);
+                temp -> next -> prev = temp;
+
+                iCount--;
+            }
+        }
+};
+
+int main()
+{
+    SinglyLL obj;
+    int iRet = 0;
+
+    obj.InsertFirst(51);
+    obj.InsertFirst(21);
+    obj.InsertFirst(11);
+
+    obj.Display();
+
+    iRet = obj.Count();
+    cout<<"Number of nodes are : "<<iRet<<"\n";
+
+    obj.InsertLast(101);
+    obj.InsertLast(111);
+    obj.InsertLast(121);
+
+    obj.Display();
+    iRet = obj.Count();
+    cout<<"Number of nodes are : "<<iRet<<"\n";
+
+    obj.DeleteFirst();
+
+    obj.Display();
+    iRet = obj.Count();
+    cout<<"Number of nodes are : "<<iRet<<"\n";
+
+    obj.DeleteLast();
+
+    obj.Display();
+    iRet = obj.Count();
+    cout<<"Number of nodes are : "<<iRet<<"\n";
+
+    obj.InsertAtPos(3,105);
+
+    obj.Display();
+    iRet = obj.Count();
+    cout<<"Number of nodes are : "<<iRet<<"\n";
+
+    obj.DeleteAtPos(3);
+
+    obj.Display();
+    iRet = obj.Count();
+    cout<<"Number of nodes are : "<<iRet<<"\n";
+
+
+    return 0;
+}
